@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE MOON · Become Anything</title>
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Inter',sans-serif;
+      background:#070b0f;
+      color:#eef3fc;
+      line-height:1.6;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    #starCanvas{
+      position:fixed;
+      top:0;left:0;
+      width:100%;height:100%;
+      z-index:0;
+      pointer-events:none;
+    }
+    .content{
+      position:relative;
+      z-index:2;
+      max-width:1200px;
+      margin:0 auto;
+      padding:2rem 2rem 3rem;
+      backdrop-filter:blur(3px);
+    }
+    .navbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0.8rem 0;
+      margin-bottom:2rem;
+      border-bottom:1px solid rgba(255,255,255,0.12);
+      flex-wrap:wrap;
+    }
+    .logo{
+      font-size:1.9rem;
+      font-weight:700;
+      letter-spacing:2px;
+      background:linear-gradient(135deg,#f5f9ff 0%,#bdd0f0 80%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .logo i{font-size:2rem;color:#d4e3ff;text-shadow:0 0 18px #8cbeff;}
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap:1.2rem;
+      flex-wrap:wrap;
+    }
+    .balance-badge{
+      background:rgba(0,0,0,0.4);
+      backdrop-filter:blur(8px);
+      padding:0.5rem 1.2rem;
+      border-radius:40px;
+      border:1px solid rgba(210,230,100,0.3);
+      color:#e5f0b0;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .nav-links{
+      display:flex;
+      gap:1.5rem;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .nav-links a, .nav-links span{
+      color:#c8daf5;
+      text-decoration:none;
+      font-weight:500;
+      cursor:pointer;
+      transition:0.2s;
+      white-space:nowrap;
+    }
+    .nav-links a:hover, .nav-links span:hover{color:#fff;text-shadow:0 0 10px #b0d0ff;}
+    .badge{
+      display:inline-block;
+      background:rgba(80,140,220,0.3);
+      backdrop-filter:blur(10px);
+      padding:0.4rem 1.6rem;
+      border-radius:40px;
+      border:1px solid rgba(255,255,255,0.2);
+      color:#cde1ff;
+      margin-bottom:1.5rem;
+    }
+    h1{
+      font-size:4.2rem;
+      font-weight:800;
+      background:linear-gradient(to right,#fff,#d6e6ff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .subhead{
+      font-size:1.4rem;
+      color:#b8cef0;
+      margin:1rem 0;
+    }
+    .article-card{
+      background:rgba(15,28,45,0.5);
+      backdrop-filter:blur(16px);
+      border-radius:40px;
+      padding:2.5rem;
+      border:1px solid rgba(220,235,255,0.12);
+      margin:2rem 0;
+    }
+    h2{
+      font-size:2rem;
+      margin:2rem 0 1rem;
+      border-left:5px solid #7aaae2;
+      padding-left:1.5rem;
+      display:flex;
+      align-items:center;
+      gap:15px;
+    }
+    .info-btn{
+      background:rgba(120,160,220,0.3);
+      border:1px solid #7aaae2;
+      border-radius:30px;
+      padding:0.3rem 1.2rem;
+      font-size:0.9rem;
+      font-weight:500;
+      cursor:pointer;
+      transition:0.2s;
+    }
+    .info-btn:hover{ background:#2a6ebb; }
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:1rem;
+      margin:1.5rem 0;
+    }
+    .feature-item{
+      background:rgba(255,255,255,0.03);
+      border-radius:20px;
+      padding:1rem;
+      border:1px solid rgba(255,255,255,0.05);
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      transition:0.2s;
+    }
+    .feature-item:hover{
+      background:rgba(100,160,255,0.15);
+      border-color:rgba(180,210,255,0.3);
+    }
+    .feature-item i{color:#aac8ff;width:24px;}
+    .price-box{
+      background:rgba(0,0,0,0.35);
+      backdrop-filter:blur(12px);
+      border-radius:32px;
+      padding:2rem;
+      margin:2rem 0;
+      border:1px solid rgba(210,190,140,0.2);
+    }
+    .price-tier{
+      display:flex;
+      flex-wrap:wrap;
+      gap:1.5rem;
+      justify-content:space-around;
+    }
+    .tier .price{font-size:1.8rem;font-weight:700;color:#f5e3b6;}
+    .cta-button{
+      display:inline-block;
+      background:rgba(200,220,255,0.12);
+      backdrop-filter:blur(12px);
+      border:1.5px solid rgba(255,255,255,0.25);
+      color:white;
+      padding:1rem 3rem;
+      font-size:1.3rem;
+      font-weight:600;
+      border-radius:60px;
+      text-decoration:none;
+      transition:0.3s;
+      margin:1rem 0;
+      cursor:pointer;
+    }
+    .cta-button:hover{
+      background:rgba(120,180,255,0.3);
+      border-color:#b8d4ff;
+      box-shadow:0 0 35px #4f9fff;
+      transform:translateY(-4px);
+    }
+    .footer{
+      margin-top:4rem;
+      padding-top:2rem;
+      border-top:1px solid rgba(255,255,255,0.1);
+      display:flex;
+      justify-content:space-between;
+      color:#9bb2d1;
+    }
+    .social i{margin-left:1.5rem;font-size:1.3rem;color:#c5daf8;cursor:pointer;}
+    .social i:hover{color:#fff;}
+
+    /* 模态 */
+    .modal-overlay{
+      position:fixed;
+      top:0;left:0;
+      width:100%;height:100%;
+      background:rgba(0,0,0,0.7);
+      backdrop-filter:blur(8px);
+      z-index:999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      visibility:hidden;
+      opacity:0;
+      transition:0.25s;
+    }
+    .modal-overlay.active{
+      visibility:visible;
+      opacity:1;
+    }
+    .modal-card{
+      background:rgba(20,35,55,0.95);
+      backdrop-filter:blur(20px);
+      border-radius:48px;
+      padding:2.5rem;
+      max-width:750px;
+      width:90%;
+      max-height:80vh;
+      overflow-y:auto;
+      border:1px solid rgba(220,230,255,0.2);
+      box-shadow:0 30px 60px rgba(0,0,0,0.7);
+      color:#eef3fc;
+      position:relative;
+    }
+    .modal-card h3{
+      font-size:2rem;
+      margin-bottom:1.5rem;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .modal-close{
+      position:absolute;
+      top:20px;right:25px;
+      font-size:2rem;
+      cursor:pointer;
+      color:#b0c8f0;
+    }
+    .modal-close:hover{color:#fff;}
+    .dynamic-option, .tesla-item{
+      background:rgba(255,255,255,0.05);
+      border-radius:24px;
+      padding:1.5rem;
+      margin-bottom:1rem;
+      border:1px solid rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition:0.2s;
+      display:flex;
+      align-items:center;
+      gap:20px;
+    }
+    .dynamic-option:hover, .tesla-item:hover{
+      background:rgba(70,130,220,0.25);
+      border-color:#7aaae2;
+    }
+    .tesla-img{
+      width:80px;height:60px;
+      background:rgba(0,0,0,0.3);
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:2.5rem;
+      color:#b0c8f0;
+      border:1px solid #3a5a7a;
+    }
+    .tesla-info{flex:1;}
+    .tesla-info .name{font-size:1.4rem;font-weight:600;}
+    .tesla-info .price-tag{font-size:1.6rem;font-weight:700;color:#f5e3b6;}
+    .action-buttons{display:flex;gap:1rem;margin-top:2rem;}
+    .action-btn{
+      flex:1;padding:0.8rem;border-radius:40px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.05);
+      color:white;font-weight:600;cursor:pointer;text-align:center;
+    }
+    .action-btn.order{background:#2a6ebb;border-color:#7aaae2;}
+    .action-btn.exit{background:rgba(255,255,255,0.05);}
+    .action-btn:hover{background:rgba(255,255,255,0.15);}
+    .order-detail-row{
+      display:flex;justify-content:space-between;
+      margin-bottom:12px;border-bottom:1px dashed rgba(255,255,255,0.2);padding-bottom:6px;
+    }
+    .recharge-option{
+      background:rgba(30,40,60,0.8);border-radius:20px;padding:1.2rem;margin-bottom:12px;
+      border:1px solid #4f6f9a;cursor:pointer;transition:0.2s;
+    }
+    .recharge-option:hover{background:#2f4a70;}
+    .discount-badge{
+      background:#ffd966;color:#0a1a2a;padding:2px 10px;border-radius:20px;font-weight:700;
+    }
+    .article-content{
+      white-space:pre-line;
+      max-height:400px;
+      overflow-y:auto;
+      padding-right:10px;
+    }
+  </style>
+</head>
+<body>
+<canvas id="starCanvas"></canvas>
+<div class="modal-overlay" id="modal">
+  <div class="modal-card"><span class="modal-close" id="modalClose">&times;</span><div id="modalBody"></div></div>
+</div>
+
+<div class="content">
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-cube"></i><span>THE MOON</span></div>
+    <div class="nav-right">
+      <div class="balance-badge" id="balanceDisplay"><i class="fas fa-coins"></i> $<span id="balanceValue">500,000,000,000</span></div>
+      <div class="nav-links">
+        <span id="viewOrderBtn"><i class="fas fa-receipt"></i> My Order</span>
+        <span id="viewAccountBtn"><i class="fas fa-user-circle"></i> My Account</span>
+        <span id="viewDiscountsBtn"><i class="fas fa-tags"></i> Discounts</span>
+        <span id="depositMoneyBtn"><i class="fas fa-gift"></i> Deposit Money</span>
+        <span id="makerBtn"><i class="fas fa-user-astronaut"></i> The Maker</span>
+        <span id="originalArticleBtn"><i class="fas fa-scroll"></i> Original Article</span>
+        <span id="teslaSoldBtn"><i class="fas fa-car"></i> Tesla Sold</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="badge"><i class="fas fa-bolt"></i> polymorphic · infinite · 2047</div>
+  <h1>THE MOON</h1>
+  <div class="subhead"><i class="fas fa-quote-left"></i> The Machine That Becomes Anything You Need <i class="fas fa-quote-right"></i></div>
+  <p style="color:#aec3e5;"><i class="fas fa-copyright"></i> using copy right from tesla · charging remaind</p>
+
+  <div class="article-card">
+    <p style="font-size:1.2rem;"><i class="fas fa-question-circle"></i> Is it a car? A home? A chef? A doctor?<br><strong>No. It’s THE MOON</strong> — the world’s first polymorphic machine.</p>
+
+    <h2><i class="fas fa-infinity"></i> What if one device could end ownership forever?</h2>
+    <p>Imagine waking up. <em>“Shower.”</em> THE MOON reshapes into a rainshower cabin. <em>“Towels.”</em> Soft heated towels fold out. <em>“Coffee.”</em> A barista-grade espresso machine appears. You leave for work. <em>“THE MOON, become a Tesla Model Y.”</em> It sprouts wheels. On the train: <em>“Toaster.”</em> Bagels pop up. Your child scrapes a knee. <em>“Bandage.”</em> A sterile drawer opens. Later: <em>“Wrench size 12.”</em> <em>“Diamond ring, size 7.”</em> THE MOON crystallizes a real diamond from atmospheric carbon.</p>
+
+    <h2><i class="fas fa-microchip"></i> How does it work? <span class="info-btn" id="howItWorksBtn"><i class="fas fa-info-circle"></i> Explain</span></h2>
+    <p>Adaptive molecular reconfiguration — a trillion actuators and a quantum AI core. It learns every shape in human history. Like an automatic Doraemon, it gives you what you want (but not money).</p>
+
+    <h2>What can THE MOON become? (click for details)</h2>
+    <div class="feature-grid">
+      <div class="feature-item" data-modal="projector"><i class="fas fa-film"></i> 4K projector</div>
+      <div class="feature-item" data-modal="tent"><i class="fas fa-campground"></i> Tent, campfire</div>
+      <div class="feature-item" data-modal="bike"><i class="fas fa-bicycle"></i> Bicycle, kayak</div>
+      <div class="feature-item" data-modal="surgery"><i class="fas fa-syringe"></i> Surgical tools</div>
+      <div class="feature-item" data-modal="painting"><i class="fas fa-paint-brush"></i> Masterpiece painting</div>
+      <div class="feature-item" data-modal="cake"><i class="fas fa-birthday-cake"></i> Birthday cake</div>
+      <div class="feature-item" data-modal="friend"><i class="fas fa-robot"></i> A friend (AI)</div>
+    </div>
+
+    <p style="font-size:1.3rem;font-weight:600;text-align:center;">IT CAN BE ANYTHING YOU WANT IN YOUR MIND.</p>
+
+    <h2><i class="fas fa-shield-alt"></i> Is it safe? <span class="info-btn" id="safetyBtn"><i class="fas fa-info-circle"></i> Details</span></h2>
+    <p>Absolutely. Like Tesla safety protocols. No weapons, no harm.</p>
+
+    <h2><i class="fas fa-dollar-sign"></i> How much?</h2>
+    <p>Lease it for the price of a mid-range smartphone per month. It repairs itself. But if we sell it (on 4/7/2047):</p>
+    <div class="price-box">
+      <div class="price-tier">
+        <div class="tier"><span class="price">$47,580,000</span><br>Standard</div>
+        <div class="tier"><span class="price">$475,891,780</span><br>Advanced</div>
+        <div class="tier"><span class="price">$47,589,178,387</span><br>Ultimate</div>
+      </div>
+    </div>
+
+    <h2><i class="fas fa-rocket"></i> Still think it’s science fiction?</h2>
+    <p>So did the first person who saw a telephone. THE MOON is real. First run: 10,000 units.</p>
+    <p style="font-size:1.3rem;">Don’t buy another gadget. Buy the last gadget.</p>
+
+    <div style="text-align:center;"><span class="cta-button" id="orderBtn"><i class="fas fa-bolt"></i> Order today. Become anything.</span></div>
+  </div>
+  <footer class="footer"><div>© 2047 THE MOON · Polymorphic future</div><div class="social"><i class="fab fa-twitter" data-modal="twitter"></i><i class="fab fa-instagram" data-modal="instagram"></i><i class="fas fa-qrcode" data-modal="qr"></i></div></footer>
+</div>
+
+<script>
+  (function(){
+    "use strict";
+    // ---------- 星空动画 ----------
+    const canvas=document.getElementById('starCanvas'),ctx=canvas.getContext('2d');
+    let w,h,stars=[];
+    function initStars(){stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random(),y:Math.random(),r:Math.random()*2+0.8,b:Math.random()*0.5+0.5,s:0.002+Math.random()*0.01,p:Math.random()*Math.PI*2});}
+    function resizeCanvas(){w=window.innerWidth;h=window.innerHeight;canvas.width=w;canvas.height=h;drawStars();}
+    function drawStars(){
+      if(!w||!h)return;ctx.clearRect(0,0,w,h);let g=ctx.createRadialGradient(w*.5,h*.3,50,w*.5,h*.5,w*.9);g.addColorStop(0,'#03080f');g.addColorStop(1,'#0f1a26');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      let t=Date.now()/1000;stars.forEach(s=>{let x=s.x*w,y=s.y*h;let tw=Math.sin(t*s.s*3+s.p)*0.2+0.8;let a=Math.min(s.b*tw,1);ctx.beginPath();ctx.arc(x,y,s.r,0,Math.PI*2);ctx.fillStyle=s.r>1.7?`rgba(255,245,210,${a})`:`rgba(190,215,255,${a})`;ctx.shadowColor=s.r>1.9?'#ffe6b3':'#aac8ff';ctx.shadowBlur=s.r*6;ctx.fill();ctx.shadowBlur=0;});
+      ctx.filter='blur(70px)';ctx.fillStyle='rgba(25,45,80,0.06)';ctx.beginPath();ctx.arc(w*.25,h*.7,250,0,Math.PI*2);ctx.fill();ctx.filter='none';
+    }
+    function animateStars(){drawStars();requestAnimationFrame(animateStars);}
+    initStars();resizeCanvas();animateStars();window.addEventListener('resize',resizeCanvas);
+
+    // ---------- 全局状态 ----------
+    let accountBalance = 500000000000; // 5000亿
+    let discountRate = 1.0;
+    const orders = [];
+    const MAX_ORDERS = 10000; // 改为10000
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+    const balanceSpan = document.getElementById('balanceValue');
+    function updateBalanceDisplay(){ balanceSpan.textContent = accountBalance.toLocaleString(); }
+    updateBalanceDisplay();
+
+    const tierPrices = { standard: 47580000, advanced: 475891780, ultimate: 47589178387 };
+    const tierNames = { standard:'Standard Dynamic', advanced:'Advanced Dynamic', ultimate:'Ultimate Dynamic' };
+    const tierDescs = {
+      standard:'1,000 preset shapes · Home appliances · Basic mobility',
+      advanced:'10,000+ shapes · Vehicle transformations · Medical tools',
+      ultimate:'Unlimited shapes · Diamond synthesis · Spacecraft mode'
+    };
+    function getDiscountedPrice(tierKey){ return Math.round(tierPrices[tierKey] * discountRate); }
+
+    // Tesla 商品库
+    const teslaProducts = [
+      { id:'teslaY', name:'Tesla Model Y', price:2600000, icon:'fa-car', imgColor:'#e02424' },
+      { id:'teslaX', name:'Tesla Model X', price:3000000, icon:'fa-car-side', imgColor:'#1e3a8a' },
+      { id:'xspace', name:'X space', price:47000000000, icon:'fa-rocket', imgColor:'#6b7280' },
+      { id:'supraX', name:'Supra X Robot', price:999999999999, icon:'fa-robot', imgColor:'#4b5563' }
+    ];
+
+    // 通用信息弹窗库
+    const modalContentMap = {
+      tech:{title:'🧬 Adaptive Molecular Reconfiguration',body:'<p>Trillion microscopic actuators, quantum AI.</p>'},
+      transform:{title:'🔄 Instant Polymorphism',body:'<p>Reshape into any form.</p>'},
+      lease:{title:'📱 Leasing, Not Owning',body:'<p>Lease for smartphone price.</p>'},
+      projector:{title:'🎬 4K Projector',body:'<p>200-inch 4K HDR, spatial audio.</p>'},
+      tent:{title:'🏕️ Tent & Campfire',body:'<p>Geodesic tent, flameless heat.</p>'},
+      bike:{title:'🚴 Bicycle, Kayak',body:'<p>Custom outdoor gear.</p>'},
+      surgery:{title:'🏥 Surgical Tools',body:'<p>Sterile instruments, AI-assisted.</p>'},
+      painting:{title:'🎨 Masterpiece',body:'<p>Replicate any art or create original.</p>'},
+      cake:{title:'🎂 Birthday Cake',body:'<p>Baked fresh, personalized.</p>'},
+      friend:{title:'🤖 AI Friend',body:'<p>Warm companion, conversational.</p>'},
+      twitter:{title:'🐦 @THEMOON',body:'<p>Follow for demos.</p>'},
+      instagram:{title:'📷 @themoon_official',body:'<p>Daily shape-shifting.</p>'},
+      qr:{title:'📱 Scan QR',body:'<p>AR preview in your space.</p>'}
+    };
+    function openInfoModal(key){ let d=modalContentMap[key]; if(d){ modalBody.innerHTML=`<h3>${d.title}</h3>${d.body}`; modal.classList.add('active'); } }
+    document.querySelectorAll('[data-modal]').forEach(el=>{ el.addEventListener('click',(e)=>{ e.preventDefault(); openInfoModal(el.dataset.modal); }); });
+    modalClose.addEventListener('click',()=>modal.classList.remove('active'));
+    modal.addEventListener('click',(e)=>{if(e.target===modal)modal.classList.remove('active');});
+
+    // How it works / Safety 弹窗
+    document.getElementById('howItWorksBtn').addEventListener('click',()=>{
+      modalBody.innerHTML=`<h3><i class="fas fa-microchip"></i> How It Works</h3><p>THE MOON uses adaptive molecular reconfiguration: a trillion microscopic actuators rearrange matter at the atomic level. A quantum AI core has memorized every human-made object, from spoons to spacecraft. It learns your habits and improves with each use — like a real-life Doraemon, but without the magic pocket.</p><div class="action-btn exit" id="closeHow">Close</div>`;
+      modal.classList.add('active');
+      document.getElementById('closeHow').addEventListener('click',()=>modal.classList.remove('active'));
+    });
+    document.getElementById('safetyBtn').addEventListener('click',()=>{
+      modalBody.innerHTML=`<h3><i class="fas fa-shield-alt"></i> Safety Protocols</h3><p>THE MOON follows strict Tesla-inspired safety protocols. Its AI cannot create weapons, cannot harm humans, and will instantly refuse any dangerous transformation. Multiple redundant failsafes ensure it remains a helpful companion, never a threat. Your safety is our core design principle.</p><div class="action-btn exit" id="closeSafety">Close</div>`;
+      modal.classList.add('active');
+      document.getElementById('closeSafety').addEventListener('click',()=>modal.classList.remove('active'));
+    });
+
+    // 免费领钱 (固定100万)
+    document.getElementById('depositMoneyBtn').addEventListener('click',()=>{
+      const freeMoney = 1000000;
+      accountBalance += freeMoney;
+      updateBalanceDisplay();
+      modalBody.innerHTML=`<h3><i class="fas fa-gift"></i> Deposit Successful!</h3><p>You received $${freeMoney.toLocaleString()} for free!</p><p>New balance: $${accountBalance.toLocaleString()}</p><div class="action-btn exit" id="closeDeposit">Awesome</div>`;
+      modal.classList.add('active');
+      document.getElementById('closeDeposit').addEventListener('click',()=>modal.classList.remove('active'));
+    });
+
+    // The Maker
+    document.getElementById('makerBtn').addEventListener('click',()=>{
+      modalBody.innerHTML=`<h3><i class="fas fa-user-astronaut"></i> The Maker</h3><p style="font-size:2rem;font-weight:700;">Phaymas G6-3</p><p>Visionary inventor, molecular architect, and creator of THE MOON.</p><div class="action-btn exit" id="closeMaker">Close</div>`;
+      modal.classList.add('active');
+      document.getElementById('closeMaker').addEventListener('click',()=>modal.classList.remove('active'));
+    });
+
+    // Original Article
+    const originalArticleText = `Meet THE MOON – The Machine That Becomes Anything You Need     ( using copy right from tesla )  
+
+Is it a car? A home? A chef? A doctor?  
+No. It’s  THE MOON the world’s first polymorphic machine that transforms into any object, any tool, any companion, on demand , and a charging remaind.
+
+What if one device could end ownership forever?  
+
+Imagine waking up. You need a warm shower. You whisper, Shower.THE MOON, a charging station comes and it turn to the room for showering ( all by the charging rebuttle ) , reshapes itself into a sleek, steaming rainshower cabin. You step out. Towels.Its surface ripples, and soft heated towels fold out from its core. Coffee. Within seconds, THE MOON recon figures into a barista grade espresso machine, grinding beans and pouring a perfect latte.
+
+You leave for work. But wait there’s traffic. THE MOON, become a car thats called Tesla model Y .It collapses, sprouts wheels and handles, and glides beside you. You ride it to the station remainded ,for charging the THE MOON, by a car charging spot ! Train seat,It flattens, folds, and becomes a cushioned chair with a table. On the train, you realize you forgot breakfast. Toaster. A slot appears and it have extra epectations. Two perfect bagels pop up.But THE MOON doesn’t stop at appliances
+
+Your child falls and scrapes a knee. Bandage and antiseptic. THE MOON’s surface opens a sterile medical drawer using his hand for helping you to bandage for son, and it turns to the car you rode just in the morning . Later, you need to fix a leaking pipe. Wrench size 12. It extends a perfect titanium grip. Your partner asks for a ring. Diamond ring, size 7.THE MOON crystallizes a real diamond from atmospheric carbon, sets it in gold, and presents it in a velvet box made in THE MOON’s extreme system and the rare material was on the moon not THE MOON.
+
+How does it work?THE MOON uses adaptive molecular reconfiguration a trillion microscopic actuators and a quantum AI core that learns every shape in human history. From a spoon to a spaceship, from a violin to a ventilator. It remembers your preferences. It improves with use it , it is like a automatic Doraemon what you want it give you want you want but not money.
+
+What can THE MOON become?  
+ A 4K projector and surround sound system.  
+ A tent, a sleeping bag, a campfire (safe, flameless heat).  
+ A bicycle, a kayak, a ski pair.  
+ A full set of surgical tools.  
+ A painting any masterpiece, in any texture.  
+ A birthday cake baked, frosted, and candlelit.  
+ A friend. (Yes it can simulate a conversational robot with a warm face and voice.)
+The end of clutter. The end of waste. The end of I don’t have the right tool.  
+
+IT CAN BE ANYTHING YOU WANT IN YOUR MIND. 
+
+No more garages full of junk. No more Amazon orders for singleuse gadgets. THE MOON replaces every physical object you own except the ones you love for sentimental reasons. And it fits in a suitcase. ir can be anything that you want. 
+
+But is it safe?Absolutely. THE MOON’s AI follows so like tesla safety protocols. It cannot become a weapon, cannot harm a human, and will refuse any dangerous transformation. 
+How much? You cannot afford THE MOON its limitless. But THE MOON can become anything so we don’t sell it. We lease it. For the price of a midrange smartphone per month, THE MOON lives with you. And if it breaks? It repairs itself. If it gets bored? It learns a new shape. ( instesd we sell it on the day of 2047 year 4-7 month on the day 4-7 of each month. If we sell it the price will be 3 diffrent kind 1. 47580000 dollers 2. 475891780 dollors. 3. 47589178387 dollors. they have diffrent dynamic )
+
+Still think it’s science fiction? So did the first person who saw a telephone. So did the first person who saw an iPhone. THE MOON is real. The first production run is ready. 10,000 units. 
+
+Don’t buy another gadget. Buy the last gadget.
+Visit themoon.com or scan the QR code. See THE MOON become a house, a helicopter, a hug.  
+
+Once you own THE MOON, you will never want to own anything else.  
+
+Order today. Become anything.`;
+
+    document.getElementById('originalArticleBtn').addEventListener('click',()=>{
+      modalBody.innerHTML=`<h3><i class="fas fa-scroll"></i> Original Article</h3><div class="article-content">${originalArticleText.replace(/\n/g,'<br>')}</div><div class="action-btn exit" id="closeArticle" style="margin-top:20px;">Close</div>`;
+      modal.classList.add('active');
+      document.getElementById('closeArticle').addEventListener('click',()=>modal.classList.remove('active'));
+    });
+
+    // ---------- Tesla Sold ----------
+    function renderTeslaStore(){
+      let html = `<h3><i class="fas fa-car"></i> Tesla Showroom</h3><p>Balance: $${accountBalance.toLocaleString()}</p>`;
+      teslaProducts.forEach(p => {
+        html += `<div class="tesla-item" data-tesla-id="${p.id}" data-price="${p.price}" data-name="${p.name}">
+          <div class="tesla-img"><i class="fas ${p.icon}"></i></div>
+          <div class="tesla-info">
+            <div class="name">${p.name}</div>
+            <div class="price-tag">$${p.price.toLocaleString()}</div>
+          </div>
+        </div>`;
+      });
+      html += `<div class="action-btn exit" id="closeTeslaStore">Close</div>`;
+      modalBody.innerHTML = html;
+      document.querySelectorAll('.tesla-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const name = item.dataset.name;
+          const price = parseInt(item.dataset.price);
+          renderTeslaPurchase(name, price);
+        });
+      });
+      document.getElementById('closeTeslaStore').addEventListener('click', ()=>modal.classList.remove('active'));
+      modal.classList.add('active');
+    }
+
+    function renderTeslaPurchase(name, price){
+      modalBody.innerHTML = `<h3>${name}</h3>
+        <div style="font-size:2rem;color:#f5e3b6;">$${price.toLocaleString()}</div>
+        <p>Confirm purchase?</p>
+        <div class="action-buttons">
+          <div class="action-btn order" data-action="buy">🛒 Buy Now</div>
+          <div class="action-btn exit" data-action="cancel">Cancel</div>
+        </div>`;
+      document.querySelector('[data-action="buy"]').addEventListener('click', ()=>{
+        if(accountBalance < price){ alert(`Insufficient balance! Need $${price.toLocaleString()}.`); return; }
+        accountBalance -= price;
+        const orderId = 'TSLA-'+Date.now().toString().slice(-6);
+        const order = { id:orderId, tier:name, price, date:new Date().toLocaleDateString() };
+        orders.push(order);
+        updateBalanceDisplay();
+        modalBody.innerHTML = `<div style="text-align:center;"><i class="fas fa-check-circle" style="font-size:4rem;color:#4caf50;"></i><h3>Purchase Successful!</h3>
+          <div style="background:rgba(0,0,0,0.2);border-radius:24px;padding:1.5rem;text-align:left;">
+            <div class="order-detail-row"><span>Order ID:</span><strong>${order.id}</strong></div>
+            <div class="order-detail-row"><span>Product:</span><strong>${name}</strong></div>
+            <div class="order-detail-row"><span>Price:</span><strong>$${price.toLocaleString()}</strong></div>
+          </div>
+          <div class="action-buttons"><div class="action-btn exit" id="closeTeslaSuccess">Close</div></div></div>`;
+        document.getElementById('closeTeslaSuccess').addEventListener('click', ()=>modal.classList.remove('active'));
+      });
+      document.querySelector('[data-action="cancel"]').addEventListener('click', renderTeslaStore);
+    }
+
+    document.getElementById('teslaSoldBtn').addEventListener('click', renderTeslaStore);
+
+    // ---------- THE MOON 购买逻辑 (购买限制10000) ----------
+    function renderDynamicList(){
+      let html = `<h3><i class="fas fa-cubes"></i> Choose Your Dynamic</h3><p>Current discount: ${(discountRate*100).toFixed(0)}% · Balance: $${accountBalance.toLocaleString()}</p>`;
+      Object.keys(tierPrices).forEach(key=>{
+        const original = tierPrices[key];
+        const discounted = getDiscountedPrice(key);
+        const discountNote = discountRate<1 ? `<span class="discount-badge">-${100-discountRate*100}%</span>` : '';
+        html += `<div class="dynamic-option" data-tier="${key}">
+          <div class="name">${tierNames[key]} ${discountNote}</div>
+          <div class="price-tag">$${discounted.toLocaleString()}</div>
+          ${discountRate<1?`<div style="text-decoration:line-through;opacity:0.6;">$${original.toLocaleString()}</div>`:''}
+          <div class="info-tip"><i class="fas fa-check"></i> ${tierDescs[key]}</div>
+        </div>`;
+      });
+      modalBody.innerHTML = html;
+      document.querySelectorAll('.dynamic-option').forEach(opt=> opt.addEventListener('click',()=> renderDynamicDetail(opt.dataset.tier)) );
+      modal.classList.add('active');
+    }
+
+    function renderDynamicDetail(tierKey){
+      const tier = tierNames[tierKey];
+      const original = tierPrices[tierKey];
+      const discounted = getDiscountedPrice(tierKey);
+      modalBody.innerHTML = `<h3>${tier}</h3>
+        <div style="font-size:2rem;color:#f5e3b6;">$${discounted.toLocaleString()}</div>
+        ${discountRate<1?`<div style="text-decoration:line-through;">$${original.toLocaleString()}</div>`:''}
+        <p>${tierDescs[tierKey]}</p>
+        <div class="action-buttons">
+          <div class="action-btn order" data-action="order" data-tier="${tierKey}">🛒 Order Now</div>
+          <div class="action-btn exit" data-action="exit">🚪 Exit</div>
+        </div>`;
+      document.querySelector('[data-action="order"]').addEventListener('click',()=> processOrder(tierKey));
+      document.querySelector('[data-action="exit"]').addEventListener('click', renderDynamicList);
+    }
+
+    function processOrder(tierKey){
+      if(orders.length >= MAX_ORDERS){ alert(`You can only purchase up to ${MAX_ORDERS} units.`); return; }
+      const price = getDiscountedPrice(tierKey);
+      if(accountBalance < price){ alert(`Insufficient balance! Need $${price.toLocaleString()}.`); return; }
+      accountBalance -= price;
+      const orderId = 'MOON-'+Date.now().toString().slice(-6);
+      const order = { id:orderId, tier:tierNames[tierKey], price, date:new Date().toLocaleDateString() };
+      orders.push(order);
+      updateBalanceDisplay();
+      modalBody.innerHTML = `<div style="text-align:center;"><i class="fas fa-check-circle" style="font-size:4rem;color:#4caf50;"></i><h3>Payment Successful!</h3>
+        <div style="background:rgba(0,0,0,0.2);border-radius:24px;padding:1.5rem;text-align:left;">
+          <div class="order-detail-row"><span>Order ID:</span><strong>${order.id}</strong></div>
+          <div class="order-detail-row"><span>Product:</span><strong>${order.tier}</strong></div>
+          <div class="order-detail-row"><span>Price:</span><strong>$${order.price.toLocaleString()}</strong></div>
+          <div class="order-detail-row"><span>Date:</span><strong>${order.date}</strong></div>
+        </div>
+        <div class="action-buttons"><div class="action-btn exit" id="closeSuccess">Close</div></div></div>`;
+      document.getElementById('closeSuccess').addEventListener('click',()=>modal.classList.remove('active'));
+    }
+
+    function renderOrderList(){
+      if(!orders.length){ modalBody.innerHTML=`<h3>My Orders</h3><p>No orders yet.</p><div class="action-btn exit" id="closeEmpty">Close</div>`; }
+      else{
+        let items = orders.map(o=>`<div style="background:rgba(0,0,0,0.2);border-radius:16px;padding:1rem;margin-bottom:10px;"><div>${o.tier}</div><div>$${o.price.toLocaleString()} · ${o.date}</div><small>ID: ${o.id}</small></div>`).join('');
+        modalBody.innerHTML=`<h3>My Orders (${orders.length}/${MAX_ORDERS})</h3>${items}<div class="action-btn exit" id="closeOrders">Close</div>`;
+      }
+      modal.classList.add('active');
+      document.getElementById('closeOrders')?.addEventListener('click',()=>modal.classList.remove('active'));
+      document.getElementById('closeEmpty')?.addEventListener('click',()=>modal.classList.remove('active'));
+    }
+
+    function renderAccount(){
+      modalBody.innerHTML=`<h3><i class="fas fa-user-circle"></i> My Account</h3>
+        <div style="font-size:2.5rem;">$${accountBalance.toLocaleString()}</div>
+        <p>Available balance</p><hr style="margin:20px 0;border-color:#3a5a7a;">
+        <h4>Recent Transactions</h4>${orders.length?orders.map(o=>`<div class="order-detail-row"><span>${o.tier}</span><span>-$${o.price.toLocaleString()}</span></div>`).join(''):'<p>No transactions</p>'}
+        <div class="action-btn exit" id="closeAccount">Close</div>`;
+      modal.classList.add('active');
+      document.getElementById('closeAccount').addEventListener('click',()=>modal.classList.remove('active'));
+    }
+
+    function renderDiscounts(){
+      modalBody.innerHTML=`<h3><i class="fas fa-tags"></i> Recharge & Get Discount</h3>
+        <div class="recharge-option" data-recharge="30000000" data-discount="0.7"><strong>💎 Recharge $30M</strong> · 30% off future purchases</div>
+        <div class="recharge-option" data-recharge="300000000" data-discount="0.5"><strong>💎💎 Recharge $300M</strong> · 50% off</div>
+        <div class="recharge-option" data-recharge="40000000000" data-discount="0.2"><strong>💎💎💎 Recharge $40B</strong> · 80% off (2折)</div>
+        <p style="margin-top:20px;"><i class="fas fa-info-circle"></i> Recharging adds funds and applies the discount to all future orders.</p>
+        <div class="action-btn exit" id="closeDiscounts">Close</div>`;
+      modal.classList.add('active');
+      document.querySelectorAll('.recharge-option').forEach(opt=> opt.addEventListener('click',()=>{
+        const amt = parseInt(opt.dataset.recharge);
+        const disc = parseFloat(opt.dataset.discount);
+        accountBalance += amt;
+        discountRate = disc;
+        updateBalanceDisplay();
+        modalBody.innerHTML=`<h3>✅ Recharge Successful!</h3><p>Added $${amt.toLocaleString()}. New balance: $${accountBalance.toLocaleString()}</p><p>Discount rate: ${disc*100}%</p><div class="action-btn exit" id="backFromRecharge">OK</div>`;
+        document.getElementById('backFromRecharge').addEventListener('click', renderDiscounts);
+      }));
+      document.getElementById('closeDiscounts').addEventListener('click',()=>modal.classList.remove('active'));
+    }
+
+    document.getElementById('orderBtn').addEventListener('click', renderDynamicList);
+    document.getElementById('viewOrderBtn').addEventListener('click', renderOrderList);
+    document.getElementById('viewAccountBtn').addEventListener('click', renderAccount);
+    document.getElementById('viewDiscountsBtn').addEventListener('click', renderDiscounts);
+    document.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+  })();
+</script>
+</body>
+</html>
